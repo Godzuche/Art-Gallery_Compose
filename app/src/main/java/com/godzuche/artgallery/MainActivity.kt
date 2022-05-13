@@ -54,50 +54,10 @@ fun ArtGalleryApp() {
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Surface(
-            modifier = Modifier
-                .wrapContentSize(),
-            color = MaterialTheme.colors.background,
-            elevation = 8.dp,
-            border = BorderStroke(2.dp, Color.Gray)
-        ) {
-            Image(
-                painter = painterResource(art.artResource),
-                contentDescription = art.title,
-                modifier = Modifier
-                    .wrapContentSize()
-                    .padding(24.dp)
-            )
-        }
 
-        Surface(
-            modifier = Modifier.wrapContentSize(),
-            elevation = 8.dp,
-        ) {
-            Column(
-                modifier = Modifier
-                    .padding(16.dp)
-                    .fillMaxWidth()
-                    .wrapContentSize(align = Alignment.TopStart),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                horizontalAlignment = Alignment.Start
-            ) {
-                Text(
-                    text = art.title,
-                    fontSize = 24.sp,
-                    textAlign = TextAlign.Start
-                )
-                Text(
-                    buildAnnotatedString {
-                        withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                            append(art.artist)
-                        }
-                        append(" (${art.year})")
-                    },
-                    textAlign = TextAlign.Start
-                )
-            }
-        }
+        ArtWall(modifier = Modifier.wrapContentSize(), art = art)
+
+        Description(modifier = Modifier.wrapContentSize(), art = art)
 
         Row(
             modifier = Modifier
@@ -107,13 +67,14 @@ fun ArtGalleryApp() {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(32.dp)
         ) {
+            val artItemPosition = arts.indexOf(art)
             Button(
                 modifier = Modifier.weight(1f),
                 onClick = {
-                    if (arts.indexOf(art) <= 0) {
+                    if (artItemPosition <= 0) {
                         return@Button
                     }
-                    art = arts[arts.indexOf(art) - 1]
+                    art = arts[artItemPosition - 1]
                 }
             ) {
                 Text(text = "Previous")
@@ -121,14 +82,70 @@ fun ArtGalleryApp() {
             Button(
                 modifier = Modifier.weight(1f),
                 onClick = {
-                    if (arts.indexOf(art) >= arts.lastIndex) {
+                    if (artItemPosition >= arts.lastIndex) {
                         return@Button
                     }
-                    art = arts[arts.indexOf(art) + 1]
+                    art = arts[artItemPosition + 1]
                 }
             ) {
                 Text(text = "Next")
             }
+        }
+    }
+}
+
+@Composable
+fun ArtWall(
+    modifier: Modifier = Modifier,
+    art: Art
+) {
+    Surface(
+        modifier = modifier,
+        color = MaterialTheme.colors.background,
+        elevation = 8.dp,
+        border = BorderStroke(2.dp, Color.Gray)
+    ) {
+        Image(
+            painter = painterResource(art.artResource),
+            contentDescription = art.title,
+            modifier = Modifier
+                .wrapContentSize()
+                .padding(24.dp)
+        )
+    }
+}
+
+@Composable
+fun Description(
+    modifier: Modifier = Modifier,
+    art: Art
+) {
+    Surface(
+        modifier = modifier,
+        elevation = 8.dp,
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth()
+                .wrapContentSize(align = Alignment.TopStart),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalAlignment = Alignment.Start
+        ) {
+            Text(
+                text = art.title,
+                fontSize = 24.sp,
+                textAlign = TextAlign.Start
+            )
+            Text(
+                buildAnnotatedString {
+                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                        append(art.artist)
+                    }
+                    append(" (${art.year})")
+                },
+                textAlign = TextAlign.Start
+            )
         }
     }
 }
