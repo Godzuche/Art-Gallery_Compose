@@ -59,37 +59,50 @@ fun ArtGalleryApp() {
 
         Description(modifier = Modifier.wrapContentSize(), art = art)
 
-        Row(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(top = 8.dp)
-                .wrapContentSize(Alignment.BottomCenter),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(32.dp)
+        val artItemPosition = arts.indexOf(art)
+        NavigationButtons(
+            modifier = Modifier.fillMaxSize(),
+            onPreviousButtonClick = {
+                if (artItemPosition <= 0) {
+                    return@NavigationButtons
+                }
+                art = arts[artItemPosition - 1]
+            },
+            onNextButtonClick = {
+                if (artItemPosition >= arts.lastIndex) {
+                    return@NavigationButtons
+                }
+                art = arts[artItemPosition + 1]
+            }
+        )
+
+    }
+}
+
+@Composable
+fun NavigationButtons(
+    modifier: Modifier = Modifier,
+    onPreviousButtonClick: () -> Unit,
+    onNextButtonClick: () -> Unit
+) {
+    Row(
+        modifier = modifier
+            .padding(top = 8.dp)
+            .wrapContentSize(Alignment.BottomCenter),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(32.dp)
+    ) {
+        Button(
+            modifier = Modifier.weight(1f),
+            onClick = onPreviousButtonClick
         ) {
-            val artItemPosition = arts.indexOf(art)
-            Button(
-                modifier = Modifier.weight(1f),
-                onClick = {
-                    if (artItemPosition <= 0) {
-                        return@Button
-                    }
-                    art = arts[artItemPosition - 1]
-                }
-            ) {
-                Text(text = "Previous")
-            }
-            Button(
-                modifier = Modifier.weight(1f),
-                onClick = {
-                    if (artItemPosition >= arts.lastIndex) {
-                        return@Button
-                    }
-                    art = arts[artItemPosition + 1]
-                }
-            ) {
-                Text(text = "Next")
-            }
+            Text(text = "Previous")
+        }
+        Button(
+            modifier = Modifier.weight(1f),
+            onClick = onNextButtonClick
+        ) {
+            Text(text = "Next")
         }
     }
 }
